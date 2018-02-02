@@ -3,8 +3,11 @@ require 'rspec-benchmark'
 require 'byebug'
 require 'active_model_serializers'
 require 'oj'
+<<<<<<< HEAD
 require 'jsonapi/serializable'
 require 'jsonapi-serializers'
+=======
+>>>>>>> 4312d02... Enable oj to AM for fair benchmark test
 
 Dir[File.dirname(__FILE__) + '/shared/contexts/*.rb'].each {|file| require file }
 
