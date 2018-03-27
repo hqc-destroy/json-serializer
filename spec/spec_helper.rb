@@ -10,6 +10,7 @@ require 'jsonapi-serializers'
 >>>>>>> 4312d02... Enable oj to AM for fair benchmark test
 
 Dir[File.dirname(__FILE__) + '/shared/contexts/*.rb'].each {|file| require file }
+Dir[File.dirname(__FILE__) + '/shared/examples/*.rb'].each {|file| require file }
 
 RSpec.configure do |config|
   config.include RSpec::Benchmark::Matchers
