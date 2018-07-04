@@ -133,6 +133,25 @@ module FastJsonapi
           end
         end
       end
+<<<<<<< HEAD
+=======
+
+      def fetch_associated_object(record, relationship, params)
+        return relationship[:object_block].call(record, params) unless relationship[:object_block].nil?
+        record.send(relationship[:object_method_name])
+      end
+
+      def fetch_id(record, relationship, params)
+        unless relationship[:object_block].nil?
+          object = relationship[:object_block].call(record, params)
+
+          return object.map(&:id) if object.respond_to? :map
+          return object.try(:id)
+        end
+
+        record.public_send(relationship[:id_method_name])
+      end
+>>>>>>> 75229fd... Dev (#232)
     end
   end
 end
