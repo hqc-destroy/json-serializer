@@ -123,7 +123,11 @@ module FastJsonapi
 
             included_objects.each do |inc_obj|
               if remaining_items(items)
+<<<<<<< HEAD
                 serializer_records = serializer.get_included_records(inc_obj, remaining_items(items), known_included_objects, fieldsets)
+=======
+                serializer_records = serializer.get_included_records(inc_obj, remaining_items(items), known_included_objects, params)
+>>>>>>> 07b6e61... Params are now passed to nested includes
                 included_records.concat(serializer_records) unless serializer_records.empty?
               end
 
