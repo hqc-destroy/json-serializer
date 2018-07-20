@@ -67,7 +67,7 @@ module FastJsonapi
             temp_hash[:links] = links_hash(record, params) if data_links.present?
             temp_hash
           end
-          record_hash[:relationships] = record_hash[:relationships].merge(relationships_hash(record, uncachable_relationships_to_serialize, params)) if uncachable_relationships_to_serialize.present?
+          record_hash[:relationships] = record_hash[:relationships].merge(relationships_hash(record, uncachable_relationships_to_serialize, fieldset, params)) if uncachable_relationships_to_serialize.present?
           record_hash
         else
           record_hash = id_hash(id_from_record(record), record_type, true)
@@ -132,7 +132,15 @@ module FastJsonapi
 
               known_included_objects[code] = inc_obj
 
+<<<<<<< HEAD
+<<<<<<< HEAD
               included_records << serializer.record_hash(inc_obj, fieldsets[serializer.record_type], params)
+=======
+              included_records << serializer.record_hash(inc_obj, fieldsets[serializer.reflected_record_type], params)
+>>>>>>> a363c90... Allow the serializer to return sparse fieldsets
+=======
+              included_records << serializer.record_hash(inc_obj, fieldsets[serializer.record_type], params)
+>>>>>>> fa19413... Use record type instead of reflected record type
             end
           end
         end

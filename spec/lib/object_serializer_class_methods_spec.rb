@@ -235,7 +235,14 @@ describe FastJsonapi::ObjectSerializer do
       before do
         movie.release_year = 2008
         MovieSerializer.attribute :released_in_year, &:release_year
+<<<<<<< HEAD
+<<<<<<< HEAD
         MovieSerializer.attribute :name, &:local_name
+=======
+>>>>>>> 449c1bf... Allow passing procs with variable arguments when declaring an attribute
+=======
+        MovieSerializer.attribute :name, &:local_name
+>>>>>>> e05193f... Add spec for proc methods with optional arguments
       end
 
       after do
@@ -243,7 +250,15 @@ describe FastJsonapi::ObjectSerializer do
       end
 
       it 'returns correct hash when serializable_hash is called' do
+<<<<<<< HEAD
+<<<<<<< HEAD
         expect(serializable_hash[:data][:attributes][:name]).to eq "english #{movie.name}"
+=======
+        expect(serializable_hash[:data][:attributes][:name]).to eq movie.name
+>>>>>>> 449c1bf... Allow passing procs with variable arguments when declaring an attribute
+=======
+        expect(serializable_hash[:data][:attributes][:name]).to eq "english #{movie.name}"
+>>>>>>> e05193f... Add spec for proc methods with optional arguments
         expect(serializable_hash[:data][:attributes][:released_in_year]).to eq movie.release_year
       end
     end

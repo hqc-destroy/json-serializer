@@ -41,7 +41,15 @@ module FastJsonapi
 
       return serializable_hash unless @resource
 
+<<<<<<< HEAD
+<<<<<<< HEAD
       serializable_hash[:data] = self.class.record_hash(@resource, @fieldsets[self.class.record_type.to_sym], @params)
+=======
+      serializable_hash[:data] = self.class.record_hash(@resource, @fieldsets[self.class.reflected_record_type.to_sym], @params)
+>>>>>>> a363c90... Allow the serializer to return sparse fieldsets
+=======
+      serializable_hash[:data] = self.class.record_hash(@resource, @fieldsets[self.class.record_type.to_sym], @params)
+>>>>>>> fa19413... Use record type instead of reflected record type
       serializable_hash[:included] = self.class.get_included_records(@resource, @includes, @known_included_objects, @fieldsets, @params) if @includes.present?
       serializable_hash
     end
@@ -51,7 +59,15 @@ module FastJsonapi
 
       data = []
       included = []
+<<<<<<< HEAD
+<<<<<<< HEAD
       fieldset = @fieldsets[self.class.record_type.to_sym]
+=======
+      fieldset = @fieldsets[self.class.reflected_record_type.to_sym]
+>>>>>>> a363c90... Allow the serializer to return sparse fieldsets
+=======
+      fieldset = @fieldsets[self.class.record_type.to_sym]
+>>>>>>> fa19413... Use record type instead of reflected record type
       @resource.each do |record|
         data << self.class.record_hash(record, fieldset, @params)
         included.concat self.class.get_included_records(record, @includes, @known_included_objects, @fieldsets, @params) if @includes.present?
@@ -119,7 +135,18 @@ module FastJsonapi
         subclass.race_condition_ttl = race_condition_ttl
         subclass.data_links = data_links
         subclass.cached = cached
+<<<<<<< HEAD
+<<<<<<< HEAD
+<<<<<<< HEAD
         subclass.set_type(subclass.reflected_record_type) if subclass.reflected_record_type
+=======
+        subclass.fieldset = fieldset.dup if fieldset.present?
+>>>>>>> a363c90... Allow the serializer to return sparse fieldsets
+=======
+>>>>>>> ab652c4... Remove unused code
+=======
+        subclass.set_type(subclass.reflected_record_type) if subclass.reflected_record_type
+>>>>>>> e2bf541... Set the record type for inherited serializers
       end
 
       def reflected_record_type
