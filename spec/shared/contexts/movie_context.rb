@@ -80,7 +80,11 @@ RSpec.shared_context 'movie class' do
             a.id = i
             a.title = "Test Award #{i}"
             a.actor_id = id
+<<<<<<< HEAD
             a.year = 1990 + i
+=======
+            a.imdb_award_id = i * 10
+>>>>>>> 9c65983... Evaluate ids via the specified ‘id_method_name’ when relationships are evaluated via a block
           end
         end
       end
@@ -111,7 +115,11 @@ RSpec.shared_context 'movie class' do
     end
 
     class Award
+<<<<<<< HEAD
       attr_accessor :id, :title, :actor_id, :year
+=======
+      attr_accessor :id, :title, :actor_id, :imdb_award_id
+>>>>>>> 9c65983... Evaluate ids via the specified ‘id_method_name’ when relationships are evaluated via a block
     end
 
     class State
