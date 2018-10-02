@@ -1,10 +1,14 @@
 module FastJsonapi
   class Relationship
 <<<<<<< HEAD
+<<<<<<< HEAD
     attr_reader :key, :name, :id_method_name, :record_type, :object_method_name, :object_block, :serializer, :relationship_type, :cached, :polymorphic, :conditional_proc, :transform_method
 =======
     attr_reader :key, :name, :id_method_name, :record_type, :object_method_name, :object_block, :serializer, :relationship_type, :cached, :polymorphic, :conditional_proc, :links
 >>>>>>> 89f007d... Adds a :links option to the relationship macros
+=======
+    attr_reader :key, :name, :id_method_name, :record_type, :object_method_name, :object_block, :serializer, :relationship_type, :cached, :polymorphic, :conditional_proc, :links, :lazy_load_data
+>>>>>>> 85b41c4... Adds :lazy_load_data option
 
     def initialize(
       key:,
@@ -19,10 +23,15 @@ module FastJsonapi
       polymorphic:,
       conditional_proc:,
 <<<<<<< HEAD
+<<<<<<< HEAD
       transform_method:
 =======
       links:
 >>>>>>> 89f007d... Adds a :links option to the relationship macros
+=======
+      links:,
+      lazy_load_data: false
+>>>>>>> 85b41c4... Adds :lazy_load_data option
     )
       @key = key
       @name = name
@@ -39,15 +48,21 @@ module FastJsonapi
       @transform_method = transform_method
 =======
       @links = links || {}
+<<<<<<< HEAD
 >>>>>>> 89f007d... Adds a :links option to the relationship macros
+=======
+      @lazy_load_data = lazy_load_data
+>>>>>>> 85b41c4... Adds :lazy_load_data option
     end
 
-    def serialize(record, serialization_params, output_hash, &block)
+    def serialize(record, serialization_params, output_hash)
       if include_relationship?(record, serialization_params)
         empty_case = relationship_type == :has_many ? [] : nil
-        output_hash[key] = {
-          data: ids_hash_from_record_and_relationship(record, serialization_params) || empty_case,
-        }
+
+        output_hash[key] = {}
+        unless lazy_load_data
+          output_hash[key][:data] = ids_hash_from_record_and_relationship(record, serialization_params) || empty_case
+        end
         add_links_hash(record, serialization_params, output_hash) if links.present?
       end
     end

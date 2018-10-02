@@ -288,10 +288,15 @@ module FastJsonapi
           polymorphic: fetch_polymorphic_option(options),
           conditional_proc: options[:if],
 <<<<<<< HEAD
+<<<<<<< HEAD
           transform_method: @transform_method
 =======
           links: options[:links]
 >>>>>>> 89f007d... Adds a :links option to the relationship macros
+=======
+          links: options[:links],
+          lazy_load_data: options[:lazy_load_data]
+>>>>>>> 85b41c4... Adds :lazy_load_data option
         )
       end
 

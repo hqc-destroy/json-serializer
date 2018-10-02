@@ -279,17 +279,15 @@ end
 end
 ```
 
-This will create a `self` reference for the relationship, and a `related` link for loading the actors relationship later. NB: This will not automatically disable including the data in the relationship, you'll need to do that using the yielded block:
+This will create a `self` reference for the relationship, and a `related` link for loading the actors relationship later. NB: This will not automatically disable loading the data in the relationship, you'll need to do that using the `lazy_load_data` option:
 
 ```ruby
-  has_many :actors, links: {
+  has_many :actors, lazy_load_data: true, links: {
     self: :url,
     related: -> (object) {
       "https://movies.com/#{object.id}/actors"
     }
-  } do |movie|
-    movie.actors.limit(5)
-  end
+  }
 ```
 
 >>>>>>> 8eef7a0... Adds README documentation for relationship links
