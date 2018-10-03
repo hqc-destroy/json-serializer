@@ -133,7 +133,7 @@ module FastJsonapi
         subclass.transform_method = transform_method
         subclass.cache_length = cache_length
         subclass.race_condition_ttl = race_condition_ttl
-        subclass.data_links = data_links
+        subclass.data_links = data_links.dup
         subclass.cached = cached
 <<<<<<< HEAD
 <<<<<<< HEAD
