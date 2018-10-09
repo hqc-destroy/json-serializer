@@ -4,6 +4,7 @@ require 'active_support/time'
 require 'active_support/json'
 require 'active_support/concern'
 require 'active_support/inflector'
+require 'active_support/core_ext/numeric/time'
 require 'fast_jsonapi/attribute'
 require 'fast_jsonapi/relationship'
 require 'fast_jsonapi/link'
@@ -286,7 +287,11 @@ module FastJsonapi
           cached: options[:cached],
           polymorphic: fetch_polymorphic_option(options),
           conditional_proc: options[:if],
+<<<<<<< HEAD
           transform_method: @transform_method
+=======
+          links: options[:links]
+>>>>>>> 89f007d... Adds a :links option to the relationship macros
         )
       end
 

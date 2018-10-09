@@ -245,15 +245,22 @@ class MovieSerializer
 end
 ```
 
+<<<<<<< HEAD
 ### Meta Per Resource
 
 For every resource in the collection, you can include a meta object containing non-standard meta-information about a resource that can not be represented as an attribute or relationship.
 
+=======
+#### Links on a Relationship
+
+You can specify [relationship links](http://jsonapi.org/format/#document-resource-object-relationships) by using the `links:` option on the serializer. Relationship links in JSON API are useful if you want to load a parent document and then load associated documents later due to size constraints (see [related resource links](http://jsonapi.org/format/#document-resource-object-related-resource-links))
+>>>>>>> 8eef7a0... Adds README documentation for relationship links
 
 ```ruby
 class MovieSerializer
   include FastJsonapi::ObjectSerializer
 
+<<<<<<< HEAD
   meta do |movie|
     {
       years_since_release: Date.current.year - movie.year
@@ -262,6 +269,30 @@ class MovieSerializer
 end
 ```
 
+=======
+  has_many :actors, links: {
+    self: :url,
+    related: -> (object) {
+      "https://movies.com/#{object.id}/actors"
+    }
+  }
+end
+```
+
+This will create a `self` reference for the relationship, and a `related` link for loading the actors relationship later. NB: This will not automatically disable including the data in the relationship, you'll need to do that using the yielded block:
+
+```ruby
+  has_many :actors, links: {
+    self: :url,
+    related: -> (object) {
+      "https://movies.com/#{object.id}/actors"
+    }
+  } do |movie|
+    movie.actors.limit(5)
+  end
+```
+
+>>>>>>> 8eef7a0... Adds README documentation for relationship links
 ### Compound Document
 
 Support for top-level and nested included associations through ` options[:include] `.
