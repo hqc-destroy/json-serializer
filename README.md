@@ -290,7 +290,27 @@ This will create a `self` reference for the relationship, and a `related` link f
   }
 ```
 
+<<<<<<< HEAD
 >>>>>>> 8eef7a0... Adds README documentation for relationship links
+=======
+### Meta Per Resource
+
+For every resource in the collection, you can include a meta object containing non-standard meta-information about a resource that can not be represented as an attribute or relationship.
+
+
+```ruby
+class MovieSerializer
+  include FastJsonapi::ObjectSerializer
+
+  meta do |movie|
+    {
+      years_since_release: Date.current.year - movie.year
+    }
+  end
+end
+```
+
+>>>>>>> a160d67... Fix Documentation of Meta Per Resource
 ### Compound Document
 
 Support for top-level and nested included associations through ` options[:include] `.
