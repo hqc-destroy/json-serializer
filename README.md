@@ -329,7 +329,7 @@ options[:links] = {
   prev: '...'
 }
 options[:include] = [:actors, :'actors.agency', :'actors.agency.state']
-MovieSerializer.new([movie, movie], options).serialized_json
+MovieSerializer.new(movies, options).serialized_json
 ```
 
 ### Collection Serialization
@@ -341,7 +341,7 @@ options[:links] = {
   next: '...',
   prev: '...'
 }
-hash = MovieSerializer.new([movie, movie], options).serializable_hash
+hash = MovieSerializer.new(movies, options).serializable_hash
 json_string = MovieSerializer.new([movie, movie], options).serialized_json
 ```
 
