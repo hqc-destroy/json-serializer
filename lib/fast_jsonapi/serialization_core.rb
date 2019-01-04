@@ -147,6 +147,7 @@ module FastJsonapi
               end
 
 <<<<<<< HEAD
+<<<<<<< HEAD
               if remaining_items(items)
 <<<<<<< HEAD
                 serializer_records = serializer.get_included_records(inc_obj, remaining_items(items), known_included_objects, fieldsets)
@@ -157,6 +158,10 @@ module FastJsonapi
               if remaining_items.present?
                 serializer_records = serializer.get_included_records(inc_obj, remaining_items, known_included_objects, fieldsets, params)
 >>>>>>> f04abfd... Compute remaining_items once
+=======
+              if remaining_items.present?
+                serializer_records = serializer.get_included_records(inc_obj, remaining_items, known_included_objects, fieldsets, params)
+>>>>>>> 1373eb4... Compute remaining_items once
                 included_records.concat(serializer_records) unless serializer_records.empty?
               end
 

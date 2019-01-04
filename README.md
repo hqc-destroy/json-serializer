@@ -359,7 +359,15 @@ options[:links] = {
   prev: '...'
 }
 hash = MovieSerializer.new(movies, options).serializable_hash
+<<<<<<< HEAD
+<<<<<<< HEAD
 json_string = MovieSerializer.new(movies, options).serialized_json
+=======
+json_string = MovieSerializer.new([movie, movie], options).serialized_json
+>>>>>>> 4077a23... pass array of unique movies to serializer
+=======
+json_string = MovieSerializer.new(movies, options).serialized_json
+>>>>>>> 83e7fb6... update document/use let statement
 ```
 
 #### Control Over Collection Serialization

@@ -12,6 +12,13 @@ describe FastJsonapi::ObjectSerializer do
       options[:meta] = { total: 2 }
       options[:links] = { self: 'self' }
       options[:include] = [:actors]
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+      movies = build_movies(2)
+>>>>>>> 4077a23... pass array of unique movies to serializer
+=======
+>>>>>>> 83e7fb6... update document/use let statement
       serializable_hash = MovieSerializer.new(movies, options).serializable_hash
 
       expect(serializable_hash[:data].length).to eq 2
@@ -60,6 +67,13 @@ describe FastJsonapi::ObjectSerializer do
     it 'returns correct number of records when serialized_json is called for an array' do
       options = {}
       options[:meta] = { total: 2 }
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+      movies = build_movies(2)
+>>>>>>> 4077a23... pass array of unique movies to serializer
+=======
+>>>>>>> 83e7fb6... update document/use let statement
       json = MovieSerializer.new(movies, options).serialized_json
       serializable_hash = JSON.parse(json)
       expect(serializable_hash['data'].length).to eq 2
@@ -126,6 +140,13 @@ describe FastJsonapi::ObjectSerializer do
       end
 
       it 'returns multiple records' do
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+        movies = build_movies(2)
+>>>>>>> 4077a23... pass array of unique movies to serializer
+=======
+>>>>>>> 83e7fb6... update document/use let statement
         json_hash = MovieSerializer.new(movies).as_json
         expect(json_hash['data'].length).to eq 2
       end
@@ -141,7 +162,22 @@ describe FastJsonapi::ObjectSerializer do
       options = {}
       options[:meta] = { total: 2 }
       options[:include] = [:blah_blah]
+<<<<<<< HEAD
+<<<<<<< HEAD
       expect { MovieSerializer.new(movies, options).serializable_hash }.to raise_error(ArgumentError)
+    end
+
+    it 'returns errors when serializing with non-existent and existent includes keys' do
+      options = {}
+      options[:meta] = { total: 2 }
+      options[:include] = [:actors, :blah_blah]
+      expect { MovieSerializer.new([movie, movie], options).serializable_hash }.to raise_error(ArgumentError)
+=======
+      movies = build_movies(2)
+=======
+>>>>>>> 83e7fb6... update document/use let statement
+      expect { MovieSerializer.new(movies, options).serializable_hash }.to raise_error(ArgumentError)
+>>>>>>> 4077a23... pass array of unique movies to serializer
     end
 
     it 'returns errors when serializing with non-existent and existent includes keys' do
@@ -167,6 +203,13 @@ describe FastJsonapi::ObjectSerializer do
       options = {}
       options[:meta] = { total: 2 }
       options[:include] = ['']
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+      movies = build_movies(2)
+>>>>>>> 4077a23... pass array of unique movies to serializer
+=======
+>>>>>>> 83e7fb6... update document/use let statement
       expect(MovieSerializer.new(movies, options).serializable_hash.keys).to eq [:data, :meta]
       options[:include] = [nil]
       expect(MovieSerializer.new(movies, options).serializable_hash.keys).to eq [:data, :meta]
