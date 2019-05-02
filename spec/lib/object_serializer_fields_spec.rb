@@ -50,6 +50,18 @@ describe FastJsonapi::ObjectSerializer do
     expect(hash[:data][:relationships].keys).to eq []
   end
 
+  it 'returns no fields when none are specified' do
+    hash = MovieSerializer.new(movie, fields: { movie: [] }).serializable_hash
+
+    expect(hash[:data][:attributes].keys).to eq []
+  end
+
+  it 'returns no relationships when none are specified' do
+    hash = MovieSerializer.new(movie, fields: { movie: [] }).serializable_hash
+
+    expect(hash[:data][:relationships].keys).to eq []
+  end
+
   it 'only returns specified fields for included relationships' do
     hash = MovieSerializer.new(movie, fields: fields, include: %i[actors]).serializable_hash
 
@@ -99,8 +111,11 @@ describe FastJsonapi::ObjectSerializer do
     expect(hash[:included][3][:relationships].keys.sort).to eq %i[movie]
   end
 <<<<<<< HEAD
+<<<<<<< HEAD
 >>>>>>> e683bbf... Update spec with included documents with no explicitly given fields
 =======
+=======
+>>>>>>> ae93b85... Allow fieldsets to specify no attributes/relationships
 
   context 'with no included fields specified' do
     let(:fields) do
@@ -122,5 +137,8 @@ describe FastJsonapi::ObjectSerializer do
       expect(hash[:included][2][:relationships].keys).to eq []
     end
   end
+<<<<<<< HEAD
 >>>>>>> 21ae4aa... Allow fieldsets to specify no attributes/relationships
+=======
+>>>>>>> ae93b85... Allow fieldsets to specify no attributes/relationships
 end
