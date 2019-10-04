@@ -51,6 +51,7 @@ module FastJsonapi
 
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
       serializable_hash[:data] = self.class.record_hash(@resource, @fieldsets[self.class.record_type.to_sym], @params)
 =======
       serializable_hash[:data] = self.class.record_hash(@resource, @fieldsets[self.class.reflected_record_type.to_sym], @params)
@@ -58,6 +59,9 @@ module FastJsonapi
 =======
       serializable_hash[:data] = self.class.record_hash(@resource, @fieldsets[self.class.record_type.to_sym], @params)
 >>>>>>> fa19413... Use record type instead of reflected record type
+=======
+      serializable_hash[:data] = self.class.record_hash(@resource, @fieldsets[self.class.record_type.to_sym], @includes, @params)
+>>>>>>> 8e23831... Include `data` key when lazy-loaded relationships are specified with `includes` (#10)
       serializable_hash[:included] = self.class.get_included_records(@resource, @includes, @known_included_objects, @fieldsets, @params) if @includes.present?
       serializable_hash
     end
@@ -77,7 +81,7 @@ module FastJsonapi
       fieldset = @fieldsets[self.class.record_type.to_sym]
 >>>>>>> fa19413... Use record type instead of reflected record type
       @resource.each do |record|
-        data << self.class.record_hash(record, fieldset, @params)
+        data << self.class.record_hash(record, fieldset, @includes, @params)
         included.concat self.class.get_included_records(record, @includes, @known_included_objects, @fieldsets, @params) if @includes.present?
       end
 

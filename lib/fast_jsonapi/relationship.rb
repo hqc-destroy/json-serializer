@@ -55,12 +55,12 @@ module FastJsonapi
 >>>>>>> 85b41c4... Adds :lazy_load_data option
     end
 
-    def serialize(record, serialization_params, output_hash)
+    def serialize(record, included, serialization_params, output_hash)
       if include_relationship?(record, serialization_params)
         empty_case = relationship_type == :has_many ? [] : nil
 
         output_hash[key] = {}
-        unless lazy_load_data
+        unless (lazy_load_data && !included)
           output_hash[key][:data] = ids_hash_from_record_and_relationship(record, serialization_params) || empty_case
         end
         add_links_hash(record, serialization_params, output_hash) if links.present?
