@@ -125,6 +125,19 @@ module FastJsonapi
     end
 
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+    def add_links_hash(record, params, output_hash)
+      if links.is_a?(Symbol)
+        output_hash[key][:links] = record.public_send(links)
+      else
+        output_hash[key][:links] = links.each_with_object({}) do |(key, method), hash|
+          Link.new(key: key, method: method).serialize(record, params, hash)\
+        end
+      end
+    end
+
+>>>>>>> 83e99b2... Allow relationship links to be declared as object method (#2)
     def run_key_transform(input)
       if self.transform_method.present?
         input.to_s.send(*self.transform_method).to_sym

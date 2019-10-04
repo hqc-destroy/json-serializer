@@ -123,6 +123,8 @@ module FastJsonapi
 
         includes_list.sort.each_with_object([]) do |include_item, included_records|
           items = parse_include_item(include_item)
+          remaining_items = remaining_items(items)
+
           items.each do |item|
             next unless relationships_to_serialize && relationships_to_serialize[item]
             relationship_item = relationships_to_serialize[item]
@@ -143,12 +145,17 @@ module FastJsonapi
                 serializer = self.compute_serializer_name(inc_obj.class.name.demodulize.to_sym).to_s.constantize
               end
 
+<<<<<<< HEAD
               if remaining_items(items)
 <<<<<<< HEAD
                 serializer_records = serializer.get_included_records(inc_obj, remaining_items(items), known_included_objects, fieldsets)
 =======
                 serializer_records = serializer.get_included_records(inc_obj, remaining_items(items), known_included_objects, params)
 >>>>>>> 07b6e61... Params are now passed to nested includes
+=======
+              if remaining_items.present?
+                serializer_records = serializer.get_included_records(inc_obj, remaining_items, known_included_objects, fieldsets, params)
+>>>>>>> f04abfd... Compute remaining_items once
                 included_records.concat(serializer_records) unless serializer_records.empty?
               end
 
