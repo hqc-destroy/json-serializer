@@ -204,6 +204,12 @@ RSpec.shared_context 'movie class' do
       link(:url) { |object| "/horror-movie/#{object.id}" }
     end
 
+    class OptionalDownloadableMovieSerializer < MovieSerializer
+      link(:download, if: Proc.new { |record, params| params && params[:signed_url] }) do |movie, params|
+        params[:signed_url]
+      end
+    end
+
     class MovieWithoutIdStructSerializer
       include FastJsonapi::ObjectSerializer
       attributes :name, :release_year
@@ -392,6 +398,7 @@ RSpec.shared_context 'movie class' do
       ActionMovieSerializer
       GenreMovieSerializer
       HorrorMovieSerializer
+      OptionalDownloadableMovieSerializer
       Movie
       MovieSerializer
       Actor
