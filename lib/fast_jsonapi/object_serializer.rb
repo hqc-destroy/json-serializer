@@ -163,7 +163,11 @@ module FastJsonapi
 >>>>>>> e2bf541... Set the record type for inherited serializers
 =======
         subclass.meta_to_serialize = meta_to_serialize
+<<<<<<< HEAD
 >>>>>>> dd71bc1... Introduce the ability to add `meta` tag for every resource in the collection
+=======
+        subclass.record_id = record_id
+>>>>>>> 1d7c18f... Support for polymorphic `id_method_name` (#17)
       end
 
       def reflected_record_type
@@ -275,12 +279,15 @@ module FastJsonapi
           base_key_sym = name
           id_postfix = '_id'
         end
+        polymorphic = fetch_polymorphic_option(options)
+
         Relationship.new(
           key: options[:key] || run_key_transform(base_key),
           name: name,
           id_method_name: compute_id_method_name(
             options[:id_method_name],
             "#{base_serialization_key}#{id_postfix}".to_sym,
+            polymorphic,
             block
           ),
           record_type: options[:record_type] || run_key_transform(base_key_sym),
@@ -289,7 +296,7 @@ module FastJsonapi
           serializer: compute_serializer_name(options[:serializer] || base_key_sym),
           relationship_type: relationship_type,
           cached: options[:cached],
-          polymorphic: fetch_polymorphic_option(options),
+          polymorphic: polymorphic,
           conditional_proc: options[:if],
 <<<<<<< HEAD
 <<<<<<< HEAD
@@ -304,8 +311,8 @@ module FastJsonapi
         )
       end
 
-      def compute_id_method_name(custom_id_method_name, id_method_name_from_relationship, block)
-        if block.present?
+      def compute_id_method_name(custom_id_method_name, id_method_name_from_relationship, polymorphic, block)
+        if block.present? || polymorphic
           custom_id_method_name || :id
         else
           custom_id_method_name || id_method_name_from_relationship
