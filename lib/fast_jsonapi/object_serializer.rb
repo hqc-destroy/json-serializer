@@ -1,7 +1,6 @@
 # frozen_string_literal: true
 
 require 'active_support/time'
-require 'active_support/json'
 require 'active_support/concern'
 require 'active_support/inflector'
 require 'active_support/core_ext/numeric/time'
@@ -93,8 +92,13 @@ module FastJsonapi
     end
 
     def serialized_json
-      ActiveSupport::JSON.encode(serializable_hash)
+      warn(
+        'DEPRECATION: `#serialized_json` will be removed in the next release. '\
+        'More details: https://github.com/fast-jsonapi/fast_jsonapi/pull/44'
+      )
+      serializable_hash.to_json
     end
+    alias_method :to_json, :serialized_json
 
     private
 
@@ -282,18 +286,20 @@ module FastJsonapi
         polymorphic = fetch_polymorphic_option(options)
 
         Relationship.new(
+          owner: self,
           key: options[:key] || run_key_transform(base_key),
           name: name,
           id_method_name: compute_id_method_name(
             options[:id_method_name],
             "#{base_serialization_key}#{id_postfix}".to_sym,
             polymorphic,
+            options[:serializer],
             block
           ),
-          record_type: options[:record_type] || run_key_transform(base_key_sym),
+          record_type: options[:record_type],
           object_method_name: options[:object_method_name] || name,
           object_block: block,
-          serializer: compute_serializer_name(options[:serializer] || base_key_sym),
+          serializer: options[:serializer],
           relationship_type: relationship_type,
           cached: options[:cached],
           polymorphic: polymorphic,
@@ -311,19 +317,25 @@ module FastJsonapi
         )
       end
 
-      def compute_id_method_name(custom_id_method_name, id_method_name_from_relationship, polymorphic, block)
-        if block.present? || polymorphic
+      def compute_id_method_name(custom_id_method_name, id_method_name_from_relationship, polymorphic, serializer, block)
+        if block.present? || serializer.is_a?(Proc) || polymorphic
           custom_id_method_name || :id
         else
           custom_id_method_name || id_method_name_from_relationship
         end
       end
 
-      def compute_serializer_name(serializer_key)
-        return serializer_key unless serializer_key.is_a? Symbol
+      def serializer_for(name)
         namespace = self.name.gsub(/()?\w+Serializer$/, '')
-        serializer_name = serializer_key.to_s.classify + 'Serializer'
-        (namespace + serializer_name).to_sym
+        serializer_name = name.to_s.demodulize.classify + 'Serializer'
+        serializer_class_name = namespace + serializer_name
+        begin
+          return serializer_class_name.constantize
+        rescue NameError
+          raise NameError, "#{self.name} cannot resolve a serializer class for '#{name}'.  " +
+            "Attempted to find '#{serializer_class_name}'. " +
+            "Consider specifying the serializer directly through options[:serializer]."
+        end
       end
 
       def fetch_polymorphic_option(options)
@@ -358,7 +370,13 @@ module FastJsonapi
             relationships_to_serialize = klass.relationships_to_serialize || {}
             relationship_to_include = relationships_to_serialize[parsed_include]
             raise ArgumentError, "#{parsed_include} is not specified as a relationship on #{klass.name}" unless relationship_to_include
-            klass = relationship_to_include.serializer.to_s.constantize unless relationship_to_include.polymorphic.is_a?(Hash)
+            if relationship_to_include.static_serializer
+              klass = relationship_to_include.static_serializer
+            else
+              # the serializer may change based on the object (e.g. polymorphic relationships),
+              # so inner relationships cannot be validated
+              break
+            end
           end
         end
       end

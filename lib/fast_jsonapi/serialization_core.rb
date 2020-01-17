@@ -1,7 +1,6 @@
 # frozen_string_literal: true
 
 require 'active_support/concern'
-require 'fast_jsonapi/multi_to_json'
 
 module FastJsonapi
   MandatoryField = Class.new(StandardError)
@@ -104,11 +103,6 @@ module FastJsonapi
         record.id
       end
 
-      # Override #to_json for alternative implementation
-      def to_json(payload)
-        FastJsonapi::MultiToJson.to_json(payload) if payload.present?
-      end
-
       def parse_include_item(include_item)
         return [include_item.to_sym] unless include_item.to_s.include?('.')
 
@@ -133,21 +127,18 @@ module FastJsonapi
             next unless relationships_to_serialize && relationships_to_serialize[item]
             relationship_item = relationships_to_serialize[item]
             next unless relationship_item.include_relationship?(record, params)
-            unless relationship_item.polymorphic.is_a?(Hash)
-              record_type = relationship_item.record_type
-              serializer = relationship_item.serializer.to_s.constantize
-            end
             relationship_type = relationship_item.relationship_type
 
             included_objects = relationship_item.fetch_associated_object(record, params)
             next if included_objects.blank?
             included_objects = [included_objects] unless relationship_type == :has_many
 
+            static_serializer = relationship_item.static_serializer
+            static_record_type = relationship_item.static_record_type
+
             included_objects.each do |inc_obj|
-              if relationship_item.polymorphic.is_a?(Hash)
-                record_type = inc_obj.class.name.demodulize.underscore
-                serializer = self.compute_serializer_name(inc_obj.class.name.demodulize.to_sym).to_s.constantize
-              end
+              serializer = static_serializer || relationship_item.serializer_for(inc_obj, params)
+              record_type = static_record_type || serializer.record_type
 
 <<<<<<< HEAD
 <<<<<<< HEAD
@@ -176,6 +167,7 @@ module FastJsonapi
 <<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
               included_records << serializer.record_hash(inc_obj, fieldsets[serializer.record_type], params)
 =======
               included_records << serializer.record_hash(inc_obj, fieldsets[serializer.reflected_record_type], params)
@@ -186,6 +178,9 @@ module FastJsonapi
 =======
               included_records << serializer.record_hash(inc_obj, fieldsets[serializer.record_type], includes_list, params)
 >>>>>>> 8e23831... Include `data` key when lazy-loaded relationships are specified with `includes` (#10)
+=======
+              included_records << serializer.record_hash(inc_obj, fieldsets[record_type], includes_list, params)
+>>>>>>> 6d01bec... Improved relationship serializer options (#32)
             end
           end
         end

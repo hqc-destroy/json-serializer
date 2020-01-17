@@ -35,6 +35,7 @@ Fast JSON API serialized 250 records in 3.01 ms
   * [Params](#params)
   * [Conditional Attributes](#conditional-attributes)
   * [Conditional Relationships](#conditional-relationships)
+  * [Specifying a Relationship Serializer](#specifying-a-relationship-serializer)
   * [Sparse Fieldsets](#sparse-fieldsets)
   * [Using helper methods](#using-helper-methods)
 * [Contributing](#contributing)
@@ -126,7 +127,7 @@ hash = MovieSerializer.new(movie).serializable_hash
 
 #### Return Serialized JSON
 ```ruby
-json_string = MovieSerializer.new(movie).serialized_json
+json_string = MovieSerializer.new(movie).serializable_hash_hash.to_json
 ```
 
 #### Serialized Output
@@ -345,7 +346,7 @@ options[:links] = {
   prev: '...'
 }
 options[:include] = [:actors, :'actors.agency', :'actors.agency.state']
-MovieSerializer.new(movies, options).serialized_json
+MovieSerializer.new(movies, options).serializable_hash.to_json
 ```
 
 ### Collection Serialization
@@ -360,6 +361,7 @@ options[:links] = {
 hash = MovieSerializer.new(movies, options).serializable_hash
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 json_string = MovieSerializer.new(movies, options).serialized_json
 =======
 json_string = MovieSerializer.new([movie, movie], options).serialized_json
@@ -367,6 +369,9 @@ json_string = MovieSerializer.new([movie, movie], options).serialized_json
 =======
 json_string = MovieSerializer.new(movies, options).serialized_json
 >>>>>>> 83e7fb6... update document/use let statement
+=======
+json_string = MovieSerializer.new(movies, options).serializable_hash.to_json
+>>>>>>> 1b3d73c... Remove multi-to-json. Add a deprecation warning.
 ```
 
 #### Control Over Collection Serialization
@@ -490,6 +495,52 @@ serializer = MovieSerializer.new(movie, { params: { admin: current_user.admin? }
 serializer.serializable_hash
 ```
 
+### Specifying a Relationship Serializer
+
+In many cases, the relationship can automatically detect the serializer to use.
+
+```ruby
+class MovieSerializer
+  include FastJsonapi::ObjectSerializer
+
+  # resolves to StudioSerializer
+  belongs_to :studio
+  # resolves to ActorSerializer
+  has_many :actors
+end
+```
+
+At other times, such as when a property name differs from the class name, you may need to explicitly state the serializer to use.  You can do so by specifying a different symbol or the serializer class itself (which is the recommended usage):
+
+```ruby
+class MovieSerializer
+  include FastJsonapi::ObjectSerializer
+
+  # resolves to MovieStudioSerializer
+  belongs_to :studio, serializer: :movie_studio
+  # resolves to PerformerSerializer
+  has_many :actors, serializer: PerformerSerializer
+end
+```
+
+For more advanced cases, such as polymorphic relationships and Single Table Inheritance, you may need even greater control to select the serializer based on the specific object or some specified serialization parameters. You can do by defining the serializer as a `Proc`:
+
+```ruby
+class MovieSerializer
+  include FastJsonapi::ObjectSerializer
+
+  has_many :actors, serializer: Proc.new do |record, params|
+    if record.comedian?
+      ComedianSerializer
+    elsif params[:use_drama_serializer]
+      DramaSerializer
+    else
+      ActorSerializer
+    end
+  end
+end
+```
+
 ### Sparse Fieldsets
 
 Attributes and relationships can be selectively returned per record type by using the `fields` option.
@@ -578,7 +629,7 @@ cache_options | Hash to enable caching and set cache length | `cache_options ena
 id_method_name | Set custom method name to get ID of an object (If block is provided for the relationship, `id_method_name` is invoked on the return value of the block instead of the resource object) | `has_many :locations, id_method_name: :place_ids`
 object_method_name | Set custom method name to get related objects | `has_many :locations, object_method_name: :places`
 record_type | Set custom Object Type for a relationship | `belongs_to :owner, record_type: :user`
-serializer | Set custom Serializer for a relationship | `has_many :actors, serializer: :custom_actor` or `has_many :actors, serializer: MyApp::Api::V1::ActorSerializer`
+serializer | Set custom Serializer for a relationship | `has_many :actors, serializer: :custom_actor`, `has_many :actors, serializer: MyApp::Api::V1::ActorSerializer`, or `has_many :actors, serializer -> (object, params) { (return a serializer class) }`
 polymorphic | Allows different record types for a polymorphic association | `has_many :targets, polymorphic: true`
 polymorphic | Sets custom record types for each object class in a polymorphic association | `has_many :targets, polymorphic: { Person => :person, Group => :group }`
 
