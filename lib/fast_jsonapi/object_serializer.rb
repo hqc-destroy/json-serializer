@@ -149,9 +149,8 @@ module FastJsonapi
         subclass.cachable_relationships_to_serialize = cachable_relationships_to_serialize.dup if cachable_relationships_to_serialize.present?
         subclass.uncachable_relationships_to_serialize = uncachable_relationships_to_serialize.dup if uncachable_relationships_to_serialize.present?
         subclass.transform_method = transform_method
-        subclass.cache_length = cache_length
-        subclass.race_condition_ttl = race_condition_ttl
         subclass.data_links = data_links.dup if data_links.present?
+<<<<<<< HEAD
         subclass.cached = cached
 <<<<<<< HEAD
 <<<<<<< HEAD
@@ -164,6 +163,10 @@ module FastJsonapi
 =======
 >>>>>>> ab652c4... Remove unused code
 =======
+=======
+        subclass.cache_store_instance = cache_store_instance
+        subclass.cache_store_options = cache_store_options
+>>>>>>> 843d943... Refactor caching support (#52)
         subclass.set_type(subclass.reflected_record_type) if subclass.reflected_record_type
 >>>>>>> e2bf541... Set the record type for inherited serializers
 =======
@@ -218,9 +221,32 @@ module FastJsonapi
       end
 
       def cache_options(cache_options)
-        self.cached = cache_options[:enabled] || false
-        self.cache_length = cache_options[:cache_length] || 5.minutes
-        self.race_condition_ttl = cache_options[:race_condition_ttl] || 5.seconds
+        # FIXME: remove this if block once deprecated cache_options are not supported anymore
+        if !cache_options.key?(:store)
+          # fall back to old, deprecated behaviour because no store was passed.
+          # we assume the user explicitly wants new behaviour if he passed a
+          # store because this is the new syntax.
+          deprecated_cache_options(cache_options)
+          return
+        end
+
+        self.cache_store_instance = cache_options[:store]
+        self.cache_store_options = cache_options.except(:store)
+      end
+
+      # FIXME: remove this method once deprecated cache_options are not supported anymore
+      def deprecated_cache_options(cache_options)
+        warn('DEPRECATION WARNING: `store:` is a required cache option, we will default to `Rails.cache` for now. See https://github.com/fast-jsonapi/fast_jsonapi#caching for more information.')
+
+        %i[enabled cache_length].select { |key| cache_options.key?(key) }.each do |key|
+          warn("DEPRECATION WARNING: `#{key}` is a deprecated cache option and will have no effect soon. See https://github.com/fast-jsonapi/fast_jsonapi#caching for more information.")
+        end
+
+        self.cache_store_instance = cache_options[:enabled] ? Rails.cache : nil
+        self.cache_store_options = {
+          expires_in: cache_options[:cache_length] || 5.minutes,
+          race_condition_ttl: cache_options[:race_condition_ttl] || 5.seconds
+        }
       end
 
       def attributes(*attributes_list, &block)
@@ -269,8 +295,8 @@ module FastJsonapi
         add_relationship(relationship)
       end
 
-      def meta(&block)
-        self.meta_to_serialize = block
+      def meta(meta_name = nil, &block)
+        self.meta_to_serialize = block || meta_name
       end
 
       def create_relationship(base_key, relationship_type, options, block)

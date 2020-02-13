@@ -210,6 +210,12 @@ RSpec.shared_context 'movie class' do
       end
     end
 
+    class OptionalDownloadableMovieWithLambdaSerializer < MovieSerializer
+      link(:download, if: ->(record) { record.release_year >= 2000 }) do |movie|
+        "/download/#{movie.id}"
+      end
+    end
+
     class MovieWithoutIdStructSerializer
       include FastJsonapi::ObjectSerializer
       attributes :name, :release_year
@@ -223,7 +229,7 @@ RSpec.shared_context 'movie class' do
       belongs_to :owner, record_type: :user
       belongs_to :movie_type
 
-      cache_options enabled: true
+      cache_options store: ActiveSupport::Cache::MemoryStore.new, expires_in: 5.minutes
     end
 
     class CachingMovieWithHasManySerializer
@@ -234,7 +240,7 @@ RSpec.shared_context 'movie class' do
       belongs_to :owner, record_type: :user
       belongs_to :movie_type
 
-      cache_options enabled: true
+      cache_options store: ActiveSupport::Cache::MemoryStore.new, namespace: 'fast-jsonapi'
     end
 
     class ActorSerializer
@@ -326,6 +332,13 @@ RSpec.shared_context 'movie class' do
       attribute :release_year, if: Proc.new { |record| record.release_year >= 2000 }
     end
 
+    class MovieOptionalRecordDataWithLambdaSerializer
+      include FastJsonapi::ObjectSerializer
+      set_type :movie
+      attributes :name
+      attribute :release_year, if: ->(record) { record.release_year >= 2000 }
+    end
+
     class MovieOptionalParamsDataSerializer
       include FastJsonapi::ObjectSerializer
       set_type :movie
@@ -338,6 +351,13 @@ RSpec.shared_context 'movie class' do
       set_type :movie
       attributes :name
       has_many :actors, if: Proc.new { |record| record.actors.any? }
+    end
+
+    class MovieOptionalRelationshipWithLambdaSerializer
+      include FastJsonapi::ObjectSerializer
+      set_type :movie
+      attributes :name
+      has_many :actors, if: ->(record) { record.actors.any? }
     end
 
     class MovieOptionalRelationshipWithParamsSerializer
@@ -399,6 +419,7 @@ RSpec.shared_context 'movie class' do
       GenreMovieSerializer
       HorrorMovieSerializer
       OptionalDownloadableMovieSerializer
+      OptionalDownloadableMovieWithLambdaSerializer
       Movie
       MovieSerializer
       Actor

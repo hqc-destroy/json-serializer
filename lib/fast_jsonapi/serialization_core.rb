@@ -17,9 +17,8 @@ module FastJsonapi
                       :transform_method,
                       :record_type,
                       :record_id,
-                      :cache_length,
-                      :race_condition_ttl,
-                      :cached,
+                      :cache_store_instance,
+                      :cache_store_options,
                       :data_links,
                       :meta_to_serialize
       end
@@ -62,12 +61,12 @@ module FastJsonapi
       end
 
       def meta_hash(record, params = {})
-        meta_to_serialize.call(record, params)
+        FastJsonapi.call_proc(meta_to_serialize, record, params)
       end
 
       def record_hash(record, fieldset, includes_list, params = {})
-        if cached
-          record_hash = Rails.cache.fetch(record.cache_key, expires_in: cache_length, race_condition_ttl: race_condition_ttl) do
+        if cache_store_instance
+          record_hash = cache_store_instance.fetch(record, **cache_store_options) do
             temp_hash = id_hash(id_from_record(record, params), record_type, true)
             temp_hash[:attributes] = attributes_hash(record, fieldset, params) if attributes_to_serialize.present?
             temp_hash[:relationships] = {}
@@ -97,7 +96,7 @@ module FastJsonapi
       end
 
       def id_from_record(record, params)
-        return record_id.call(record, params) if record_id.is_a?(Proc)
+        return FastJsonapi.call_proc(record_id, record, params) if record_id.is_a?(Proc)
         return record.send(record_id) if record_id
         raise MandatoryField, 'id is a mandatory field in the jsonapi spec' unless record.respond_to?(:id)
         record.id
