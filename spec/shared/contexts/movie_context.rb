@@ -156,14 +156,6 @@ RSpec.shared_context 'movie class' do
 
     class Supplier
       attr_accessor :id, :account_id
-
-      def account
-        if account_id
-          a = Account.new
-          a.id = account_id
-          a
-        end
-      end
     end
 
     class Account
@@ -293,18 +285,12 @@ RSpec.shared_context 'movie class' do
       include FastJsonapi::ObjectSerializer
       set_type :movie
       attributes :name, :release_year
-      attribute :title_with_year do |record|
-        "#{record.name} (#{record.release_year})"
-      end
     end
 
     class MovieSerializerWithAttributeBlock
       include FastJsonapi::ObjectSerializer
       set_type :movie
       attributes :name, :release_year
-      attribute :title_with_year do |record|
-        "#{record.name} (#{record.release_year})"
-      end
     end
 
     class AgencySerializer
