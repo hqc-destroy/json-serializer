@@ -91,6 +91,7 @@ module FastJsonapi
     end
 
     def serializer_for(record, serialization_params)
+      # TODO: Remove this, dead code...
       if @static_serializer
         @static_serializer
 
@@ -106,6 +107,7 @@ module FastJsonapi
         serializer_for_name(record.class.name)
 
       else
+        # TODO: Remove this, dead code...
         raise "Unknown serializer for object #{record.inspect}"
       end
     end
