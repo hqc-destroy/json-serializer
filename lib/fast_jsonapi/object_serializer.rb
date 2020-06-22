@@ -325,11 +325,16 @@ module FastJsonapi
           conditional_proc: options[:if],
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
           transform_method: @transform_method
 =======
           links: options[:links]
 >>>>>>> 89f007d... Adds a :links option to the relationship macros
 =======
+=======
+          transform_method: @transform_method,
+          meta: options[:meta],
+>>>>>>> dd7f5ba... Add optional meta field to relationships (#99) (#100)
           links: options[:links],
           lazy_load_data: options[:lazy_load_data]
 >>>>>>> 85b41c4... Adds :lazy_load_data option

@@ -3,6 +3,7 @@ module FastJsonapi
 <<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
     attr_reader :key, :name, :id_method_name, :record_type, :object_method_name, :object_block, :serializer, :relationship_type, :cached, :polymorphic, :conditional_proc, :transform_method
 =======
     attr_reader :key, :name, :id_method_name, :record_type, :object_method_name, :object_block, :serializer, :relationship_type, :cached, :polymorphic, :conditional_proc, :links
@@ -13,6 +14,9 @@ module FastJsonapi
 =======
     attr_reader :owner, :key, :name, :id_method_name, :record_type, :object_method_name, :object_block, :serializer, :relationship_type, :cached, :polymorphic, :conditional_proc, :transform_method, :links, :lazy_load_data
 >>>>>>> 6d01bec... Improved relationship serializer options (#32)
+=======
+    attr_reader :owner, :key, :name, :id_method_name, :record_type, :object_method_name, :object_block, :serializer, :relationship_type, :cached, :polymorphic, :conditional_proc, :transform_method, :links, :meta, :lazy_load_data
+>>>>>>> dd7f5ba... Add optional meta field to relationships (#99) (#100)
 
     def initialize(
       owner:,
@@ -35,6 +39,7 @@ module FastJsonapi
 >>>>>>> 89f007d... Adds a :links option to the relationship macros
 =======
       links:,
+      meta:,
       lazy_load_data: false
 >>>>>>> 85b41c4... Adds :lazy_load_data option
     )
@@ -55,8 +60,12 @@ module FastJsonapi
 =======
       @links = links || {}
 <<<<<<< HEAD
+<<<<<<< HEAD
 >>>>>>> 89f007d... Adds a :links option to the relationship macros
 =======
+=======
+      @meta = meta || {}
+>>>>>>> dd7f5ba... Add optional meta field to relationships (#99) (#100)
       @lazy_load_data = lazy_load_data
 <<<<<<< HEAD
 >>>>>>> 85b41c4... Adds :lazy_load_data option
@@ -72,6 +81,8 @@ module FastJsonapi
 
         output_hash[key] = {}
         output_hash[key][:data] = ids_hash_from_record_and_relationship(record, serialization_params) || empty_case unless lazy_load_data && !included
+
+        add_meta_hash(record, serialization_params, output_hash) if meta.present?
         add_links_hash(record, serialization_params, output_hash) if links.present?
       end
     end
@@ -177,12 +188,23 @@ module FastJsonapi
                                    record.public_send(links)
                                  else
                                    links.each_with_object({}) do |(key, method), hash|
-                                     Link.new(key: key, method: method).serialize(record, params, hash)\
+                                     Link.new(key: key, method: method).serialize(record, params, hash)
                                    end
                                  end
     end
 
+<<<<<<< HEAD
 >>>>>>> 83e99b2... Allow relationship links to be declared as object method (#2)
+=======
+    def add_meta_hash(record, params, output_hash)
+      output_hash[key][:meta] = if meta.is_a?(Proc)
+                                  FastJsonapi.call_proc(meta, record, params)
+                                else
+                                  meta
+                                end
+    end
+
+>>>>>>> dd7f5ba... Add optional meta field to relationships (#99) (#100)
     def run_key_transform(input)
       if transform_method.present?
         input.to_s.send(*transform_method).to_sym

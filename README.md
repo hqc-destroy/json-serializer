@@ -337,7 +337,27 @@ class MovieSerializer
 end
 ```
 
+<<<<<<< HEAD
 >>>>>>> a160d67... Fix Documentation of Meta Per Resource
+=======
+#### Meta on a Relationship
+
+You can specify [relationship meta](http://jsonapi.org/format/#document-resource-object-relationships) by using the `meta:` option on the serializer. Relationship meta in JSON API is useful if you wish to provide non-standard meta-information about the relationship.
+
+Meta can be defined either by passing a static hash or by using Proc to the `meta` key. In the latter case, the record and any params passed to the serializer are available inside the Proc as the first and second parameters, respectively.
+
+
+```ruby
+class MovieSerializer
+  include JSONAPI::Serializer
+
+  has_many :actors, meta: Proc.new do |movie_record, params|
+    { count: movie_record.actors.length }
+  end
+end
+```
+
+>>>>>>> dd7f5ba... Add optional meta field to relationships (#99) (#100)
 ### Compound Document
 
 Support for top-level and nested included associations through `options[:include]`.
