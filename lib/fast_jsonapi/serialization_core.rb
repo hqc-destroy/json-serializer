@@ -167,9 +167,9 @@ module FastJsonapi
 >>>>>>> a4bd5a1... Remove exponential increase in nested includes
 
             code = "#{record_type}_#{serializer.id_from_record(inc_obj, params)}"
-            next if known_included_objects.key?(code)
+            next if known_included_objects.include?(code)
 
-            known_included_objects[code] = inc_obj
+            known_included_objects << code
 
 <<<<<<< HEAD
 <<<<<<< HEAD
