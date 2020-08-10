@@ -1,6 +1,6 @@
 # JSON:API Serialization Library
 
-A fast [JSON:API](http://jsonapi.org/) serializer for Ruby Objects.
+A fast [JSON:API](https://jsonapi.org/) serializer for Ruby Objects.
 
 Previously this project was called **fast_jsonapi**, we forked the project
 and renamed it to **jsonapi/serializer** in order to keep it alive.
@@ -257,11 +257,11 @@ class MovieSerializer
   link :self, :url
 
   link :custom_url do |object|
-    "http://movies.com/#{object.name}-(#{object.year})"
+    "https://movies.com/#{object.name}-(#{object.year})"
   end
 
   link :personalized_url do |object, params|
-    "http://movies.com/#{object.name}-#{params[:user].reference_code}"
+    "https://movies.com/#{object.name}-#{params[:user].reference_code}"
   end
 end
 ```
@@ -274,8 +274,12 @@ For every resource in the collection, you can include a meta object containing n
 =======
 #### Links on a Relationship
 
+<<<<<<< HEAD
 You can specify [relationship links](http://jsonapi.org/format/#document-resource-object-relationships) by using the `links:` option on the serializer. Relationship links in JSON API are useful if you want to load a parent document and then load associated documents later due to size constraints (see [related resource links](http://jsonapi.org/format/#document-resource-object-related-resource-links))
 >>>>>>> 8eef7a0... Adds README documentation for relationship links
+=======
+You can specify [relationship links](https://jsonapi.org/format/#document-resource-object-relationships) by using the `links:` option on the serializer. Relationship links in JSON API are useful if you want to load a parent document and then load associated documents later due to size constraints (see [related resource links](https://jsonapi.org/format/#document-resource-object-related-resource-links))
+>>>>>>> f56a354... Update links to use https (#114)
 
 ```ruby
 class MovieSerializer
@@ -342,7 +346,7 @@ end
 =======
 #### Meta on a Relationship
 
-You can specify [relationship meta](http://jsonapi.org/format/#document-resource-object-relationships) by using the `meta:` option on the serializer. Relationship meta in JSON API is useful if you wish to provide non-standard meta-information about the relationship.
+You can specify [relationship meta](https://jsonapi.org/format/#document-resource-object-relationships) by using the `meta:` option on the serializer. Relationship meta in JSON API is useful if you wish to provide non-standard meta-information about the relationship.
 
 Meta can be defined either by passing a static hash or by using Proc to the `meta` key. In the latter case, the record and any params passed to the serializer are available inside the Proc as the first and second parameters, respectively.
 
@@ -445,6 +449,25 @@ So for the example above it will call the cache instance like this:
 Rails.cache.fetch(record, namespace: 'jsonapi-serializer', expires_in: 1.hour) { ... }
 ```
 
+#### Caching and Sparse Fieldsets
+
+If caching is enabled and fields are provided to the serializer, the fieldset will be appended to the cache key's namespace.
+
+For example, given the following serializer definition and instance:
+```ruby
+class ActorSerializer
+  include JSONAPI::Serializer
+
+  attributes :first_name, :last_name
+
+  cache_options store: Rails.cache, namespace: 'jsonapi-serializer', expires_in: 1.hour
+end
+
+serializer = ActorSerializer.new(actor, { fields: { actor: [:first_name] } })
+```
+
+The following cache namespace will be generated: `'jsonapi-serializer-fieldset:first_name'`.
+
 ### Params
 
 In some cases, attribute values might require more information than what is
@@ -505,7 +528,7 @@ class MovieSerializer
     # The director will be serialized only if the :admin key of params is true
     params && params[:admin] == true
   }
-  
+
   # Custom attribute `name_year` will only be serialized if both `name` and `year` fields are present
   attribute :name_year, if: Proc.new { |record|
     record.name.present? && record.year.present?
@@ -725,4 +748,4 @@ pull request creation processes.
 
 This project is intended to be a safe, welcoming space for collaboration, and
 contributors are expected to adhere to the
-[Contributor Covenant](http://contributor-covenant.org) code of conduct.
+[Contributor Covenant](https://contributor-covenant.org) code of conduct.
