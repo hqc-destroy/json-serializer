@@ -71,11 +71,11 @@ module FastJsonapi
           record_hash = cache_store_instance.fetch(record, **cache_opts) do
             temp_hash = id_hash(id_from_record(record, params), record_type, true)
             temp_hash[:attributes] = attributes_hash(record, fieldset, params) if attributes_to_serialize.present?
-            temp_hash[:relationships] = {}
             temp_hash[:relationships] = relationships_hash(record, cachable_relationships_to_serialize, fieldset, includes_list, params) if cachable_relationships_to_serialize.present?
             temp_hash[:links] = links_hash(record, params) if data_links.present?
             temp_hash
           end
+<<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
           record_hash[:relationships] = record_hash[:relationships].merge(relationships_hash(record, uncachable_relationships_to_serialize, fieldset, params)) if uncachable_relationships_to_serialize.present?
@@ -90,6 +90,9 @@ module FastJsonapi
           record_hash
 =======
 >>>>>>> 12e2987... Rubocop cleanups.
+=======
+          record_hash[:relationships] = (record_hash[:relationships] || {}).merge(relationships_hash(record, uncachable_relationships_to_serialize, fieldset, includes_list, params)) if uncachable_relationships_to_serialize.present?
+>>>>>>> 1bcf8d2... Do not add empty relationships key (#116)
         else
           record_hash = id_hash(id_from_record(record, params), record_type, true)
           record_hash[:attributes] = attributes_hash(record, fieldset, params) if attributes_to_serialize.present?
