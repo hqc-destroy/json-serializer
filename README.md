@@ -778,7 +778,7 @@ end
 
 ```diff
 - require 'fast_jsonapi'
-+ require 'jsonapi-serializer'
++ require 'jsonapi/serializer'
 ```
 
 ### Update your cache options
