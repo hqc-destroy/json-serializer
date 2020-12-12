@@ -28,6 +28,8 @@ module FastJsonapi
       object_block:,
       serializer:,
       relationship_type:,
+<<<<<<< HEAD
+<<<<<<< HEAD
       cached: false,
       polymorphic:,
       conditional_proc:,
@@ -40,6 +42,17 @@ module FastJsonapi
 =======
       links:,
       meta:,
+=======
+      polymorphic:, conditional_proc:, transform_method:, links:, meta:, cached: false,
+>>>>>>> c5eb1ce... Fix Ruby3 compatibility issue with Procs (#160)
+=======
+      polymorphic:,
+      conditional_proc:,
+      transform_method:,
+      links:,
+      meta:,
+      cached: false,
+>>>>>>> ef93f7f... Make rubocop happy.
       lazy_load_data: false
 >>>>>>> 85b41c4... Adds :lazy_load_data option
     )
